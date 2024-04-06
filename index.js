@@ -30,7 +30,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    client.connect();    
 
      
 //   automobile
@@ -59,7 +59,7 @@ async function run() {
         const options = {
           
             // Include only the `title` and `imdb` fields in the returned document
-            projection: { title: 1, price: 1, service_id: 1},
+            projection: { title: 1, price: 1, service_id: 1, img: 1,},
           };
 
 
@@ -77,6 +77,32 @@ async function run() {
         res.send(result);
 
         
+     })
+
+
+    //  query email and specific data
+
+     app.get('/bookings',async (req,res)=>{
+
+      console.log(req.query.email);
+      let query ={};
+       if(req.query?.email){
+        query ={email: req.query.email}
+       }
+      const result = await bookingCollection.find().toArray();
+      res.send(result);
+
+     })
+
+    //  detete 
+
+     app.delete('/bookings/:id',async(req,res)=>{
+         const id =req.params.id;
+         console.log(id);
+
+         const query ={_id: new ObjectId(id)}
+         const result =await bookingCollection.deleteOne(query);
+         res.send(result);
      })
 
 
